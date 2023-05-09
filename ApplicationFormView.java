@@ -74,7 +74,8 @@ public class ApplicationFormView extends JFrame {
 	private JTextField PhoneNumber_textField;
 	// * finish implementing fields *
 	
-	public ApplicationFormView() {//design GUI(constructor)
+	public ApplicationFormView() {
+		setTitle("SKKU New Student Enrollment");//design GUI(constructor)
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 536, 541);

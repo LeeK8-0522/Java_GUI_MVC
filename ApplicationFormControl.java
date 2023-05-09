@@ -115,13 +115,16 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 					break;
 				case 5://check home address input data
 					input = view.getHomeAddress();
-					input = refineString(input);
 					if(input.isBlank()) {
-						EmptyException empty_ex = new EmptyException("home-address");
+						EmptyException empty_ex = new EmptyException("home address");
 						exceptionStack.addSuppressed(empty_ex);
 					}
 					else {
-						model.setHomeAddress(input);
+						if(checkHomeAddress(input)) model.setHomeAddress(input);
+						else {
+							HomeAddressException ex = new HomeAddressException();
+							exceptionStack.addSuppressed(ex);
+						}
 					}
 					input = "";
 					state++;
@@ -342,6 +345,20 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 		return true;
 	}//check whether GPA input data is in right range(0~4.5) 
 	
+	public boolean checkHomeAddress(String input) {
+		if(input.charAt(0) == ',' || input.charAt(input.length()-1) == ',') return false;//if input string starts or ends with ',', return false(This is exceptional case.)
+		
+		String [] words = input.split(",");//split string based on ','
+		for(int i = 0; i < words.length; i++) {
+			words[i] = words[i].trim();
+			if(words[i].isBlank()) return false;//if words element is blank, return false  
+		}//refine string input and check if there is blank
+		
+		if(words.length != 4) return false;//there should be four elements(number, street, district, city)
+		
+		return true;
+	}//check whether home address input data is in correct form
+	
 	// * Below are user-defined exception classes *
 	public class EmptyException extends Exception {
 		public EmptyException(String field) {
@@ -414,6 +431,13 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 					+ "Proper format for a phone number is 010-2335-0155.\n";
 		}
 	}//throw this exception if format of phone-number input data is not correct 
+	
+	public class HomeAddressException extends Exception {
+		public HomeAddressException() {
+			countOfError++;
+			errorMessage += Integer.toString(countOfError) + ". " + "Your home address must be in 'number, street, district, city' format.\n";
+		}
+	}//throw this exception if format of home-address input data is not correct
 	
 	public class GPAformatExcepetion extends Exception {
 		public GPAformatExcepetion() {
