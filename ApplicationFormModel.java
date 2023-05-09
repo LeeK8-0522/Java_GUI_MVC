@@ -2,16 +2,18 @@ package Main;
 
 public class ApplicationFormModel {
 
-	private String applicantName;
-	private String birthDate;
-	private String Email;
-	private String Degree;
-	private String attendedUniversity;
-	private float GPA;
-	private String Major;
-	private String phoneNumber;
-	private String personalStatement;
-	private String homeAddress;
+	//Below are fields
+	private String applicantName;//store name of applicant 
+	private String birthDate;//store birth-date of applicant
+	private String Email;//store email address of applicant
+	private String Degree;//store degree of applicant
+	private String attendedUniversity;//store attended-university of applicant
+	private float GPA;//store GPA of applicant
+	private String Major;//store major of applicant
+	private String phoneNumber;//store phone-number of applicant
+	private String personalStatement;//store personal-statement of applicant
+	private String homeAddress;//store home-address of applicant
+	//finish implementing fields
 	
 	//Below are getter-methods
 	public String getApplicantName() {

@@ -30,6 +30,7 @@ import java.awt.Rectangle;
 
 public class ApplicationFormView extends JFrame {
 
+	//Below are fields
 	private JPanel contentPane;
 	private JPanel Wallpaper_panel;
 	private JPanel ApplicantForm_pannel;
@@ -71,15 +72,9 @@ public class ApplicationFormView extends JFrame {
 	private JPanel PhoneNumber_panel;
 	private JLabel PhoneNumber_label;
 	private JTextField PhoneNumber_textField;
-
-	/**
-	 * Launch the application.
-	 */
-
-	/**
-	 * Create the frame.
-	 */
-	public ApplicationFormView() {
+	//finish implementing fields
+	
+	public ApplicationFormView() {//design GUI(constructor)
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 536, 541);
@@ -286,32 +281,32 @@ public class ApplicationFormView extends JFrame {
 		
 	}
 	
-	public void setActionListener(ActionListener action_listener, ItemListener item_listener) {
+	public void setListener(ActionListener action_listener, ItemListener item_listener) {
 		Degree_comboBox.addItemListener(item_listener);
 		SubmitApplicant_button.addActionListener(action_listener);
 	}//add action listener to Degree_comboBox and SubmitApplicant_button
 	 
 	public void freezeTextField() {
-		GPA_textField.setText(""); 
-		GPA_textField.setEditable(false);
-		GPA_textField.setBackground(new Color(220, 220, 220));
-		GPA_label.setForeground(new Color(180, 180, 180));
+		GPA_textField.setText("");//erase text in text-field
+		GPA_textField.setEditable(false);//change it to non-editable
+		GPA_textField.setBackground(new Color(220, 220, 220));//change color of background
+		GPA_label.setForeground(new Color(180, 180, 180));//change color of foreground
 		
 		AttendedUniversity_textField.setText("");
 		AttendedUniversity_textField.setEditable(false);
 		AttendedUniversity_textField.setBackground(new Color(220, 220 , 220));
 		AttendedUniversity_label.setForeground(new Color(180, 180 ,180));
-	}
+	}//freeze two text fields if user choose 'Bachelor' item
 	
 	public void activateTextField() {
-		GPA_textField.setEditable(true);
-		GPA_textField.setBackground(null);
-		GPA_label.setForeground(null);
+		GPA_textField.setEditable(true);//change it to editable
+		GPA_textField.setBackground(new Color(255, 255, 255));//set color of back-ground to default white color
+		GPA_label.setForeground(null);//set color of fore-ground to default color
 		
 		AttendedUniversity_textField.setEditable(true);
-		AttendedUniversity_textField.setBackground(null);
+		AttendedUniversity_textField.setBackground(new Color(255, 255, 255));
 		AttendedUniversity_label.setForeground(null);
-	}
+	}//activate two text-fields if user choose item except 'Bachelor' item
 
 	//Below are getter-methods
 	public String getApplicantName() {
