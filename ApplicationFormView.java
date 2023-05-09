@@ -30,7 +30,7 @@ import java.awt.Rectangle;
 
 public class ApplicationFormView extends JFrame {
 
-	//Below are fields
+	// * Below are fields *
 	private JPanel contentPane;
 	private JPanel Wallpaper_panel;
 	private JPanel ApplicantForm_pannel;
@@ -72,7 +72,7 @@ public class ApplicationFormView extends JFrame {
 	private JPanel PhoneNumber_panel;
 	private JLabel PhoneNumber_label;
 	private JTextField PhoneNumber_textField;
-	//finish implementing fields
+	// * finish implementing fields *
 	
 	public ApplicationFormView() {//design GUI(constructor)
 
@@ -308,7 +308,7 @@ public class ApplicationFormView extends JFrame {
 		AttendedUniversity_label.setForeground(null);
 	}//activate two text-fields if user choose item except 'Bachelor' item
 
-	//Below are getter-methods
+	// * Below are getter-methods *
 	public String getApplicantName() {
 		return ApplicantName_textField.getText();
 	}
@@ -337,7 +337,7 @@ public class ApplicationFormView extends JFrame {
 		return Major_textField.getText();
 	}
 	
-	public String getPhoneNumberNumber() {
+	public String getPhoneNumber() {
 		return PhoneNumber_textField.getText();
 	}
 	
@@ -348,5 +348,5 @@ public class ApplicationFormView extends JFrame {
 	public String getHomeAddress() {
 		return HomeAddress_textField.getText();
 	}
-	//finish implementing getter-method
+	// * finish implementing getter-method *
 }

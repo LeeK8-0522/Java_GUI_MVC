@@ -11,6 +11,7 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 	private ApplicationFormModel model;//model for MVC pattern
 	private ApplicationFormView view;//view for MVC pattern
 	private String errorMessage = "";//store list of error message
+	private String successMessage = "";//for showing applicant's information if there is no exception
 	private int countOfError = 0;//count of error message to put a number on each line in error message
 
 	public ApplicationFormControl(ApplicationFormModel model, ApplicationFormView view) {
@@ -22,11 +23,11 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 
 	@Override//override actionPerformed method of ActionListener interface
 	public void actionPerformed(ActionEvent e) {
-		Exception exceptionStack = new Exception();//generate exception instance for stacking up exceptions
-		int state = 0;//indicate the step of checking input data
 		
+		Exception exceptionStack = new Exception();//generate exception instance for stacking up exceptions
+		
+		int state = 0;//indicate the step of checking input data
 		String input = "";//store input data in text-fields
-		float GPA = 0;//store GPA input data
 		
 		try {//try block
 		while(state < 10) {
@@ -34,13 +35,13 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 				case 0://check applicant name input data
 					input = view.getApplicantName();//get text from text-field
 					input = refineString(input);//refine string input data
-					if(input.equals("")) {//if input data is empty, generate new empty-exception and add to stack
+					if(input.isBlank()) {//if input data is blank, generate empty-exception instance and add it to stack
 						EmptyException empty_ex = new EmptyException("name");
 						exceptionStack.addSuppressed(empty_ex);
 					}
 					else {
 						if(countWords(input) >= 2) model.setApplicantName(input);//if there are both name and surname, set name of applicant in model
-						else {//if format of input data is incorrect, generate new applicant-name-exception and add to stack
+						else {//if format of input data is incorrect, generate applicant-name-exception instance and add it to exceptionStack
 							ApplicantNameException ex = new ApplicantNameException();
 							exceptionStack.addSuppressed(ex);
 						}
@@ -51,7 +52,7 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 				case 1://check birth date input data
 					input = view.getBirthDate();
 					input = refineString(input);
-					if(input.equals("")) {
+					if(input.isBlank()) {
 						EmptyException empty_ex = new EmptyException("birth-date");
 						exceptionStack.addSuppressed(empty_ex);
 					}
@@ -68,7 +69,7 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 				case 2://check email input data
 					input = view.getEmail();
 					input = refineString(input);
-					if(input.equals("")) {
+					if(input.isBlank()) {
 						EmptyException empty_ex = new EmptyException("email");
 						exceptionStack.addSuppressed(empty_ex);
 					}
@@ -85,7 +86,7 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 				case 3://check major input data
 					input = view.getMajor();
 					input = refineString(input);
-					if(input.equals("")) {
+					if(input.isBlank()) {
 						EmptyException empty_ex = new EmptyException("major");
 						exceptionStack.addSuppressed(empty_ex);
 					}
@@ -96,10 +97,9 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 					state++;
 					break;
 				case 4://check phone number input data
-					input = view.getPhoneNumberNumber();
+					input = view.getPhoneNumber();
 					input = refineString(input);
-			
-					if(input.equals("")) {
+					if(input.isBlank()) {
 						EmptyException empty_ex = new EmptyException("phone-number");
 						exceptionStack.addSuppressed(empty_ex);
 					}
@@ -116,7 +116,7 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 				case 5://check home address input data
 					input = view.getHomeAddress();
 					input = refineString(input);
-					if(input.equals("")) {
+					if(input.isBlank()) {
 						EmptyException empty_ex = new EmptyException("home-address");
 						exceptionStack.addSuppressed(empty_ex);
 					}
@@ -129,12 +129,12 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 				case 6://check personal statement input data
 					input = view.getPersonalStatement();
 					input = refineString(input);
-					if(input.equals("")) {
+					if(input.isBlank()) {
 						EmptyException empty_ex = new EmptyException("personal-statement");
 						exceptionStack.addSuppressed(empty_ex);
 					}
 					else {
-						if(countWords(input) < 100) {
+						if(countWords(input) < 5) {
 							PersonalStatementException ex = new PersonalStatementException();
 							exceptionStack.addSuppressed(ex);
 						}
@@ -148,23 +148,59 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 				case 7://check whether degree input data is '(empty)'
 					input = view.getDegree();
 					input = refineString(input);
-					if(input.equals("(empty)")) {
+					if(input.equals("Bachelor")) {//if selected item is 'Bachelor', set degree field and change state
+						model.setDegree(input);
+						state = 10;//end while-loop statement
+					}
+					else if(input.equals("Master")||input.equals("PhD")) {//if selected item is 'Master' or 'PhD', set degree field and change state
+						model.setDegree(input);
+						state++;
+					}
+					else {////if user didn't choose any degree item, generate EmptyException and add it to exceptionStack
 						EmptyException empty_ex = new EmptyException("degree");
+						exceptionStack.addSuppressed(empty_ex);
+						state++;
+					}
+					input = "";
+					break;
+				case 8://if selected degree is 'Master' or 'PhD', check attended-university input data
+					input = view.getAttendedUniversity();
+					input = refineString(input);
+					if(input.isBlank()) {
+						EmptyException empty_ex = new EmptyException("attended university");
 						exceptionStack.addSuppressed(empty_ex);
 					}
 					else {
-						model.setDegree(input);
+						model.setAttendedUniversity(input);
 					}
 					input = "";
 					state++;
 					break;
-				case 8:
-					state++;
-					break;
-				case 9:
+				case 9://if selected degree is 'Master' or 'PhD', check GPA input data
+					input = view.getGPA();
+					input = refineString(input);
+					if(input.isBlank()) {
+						EmptyException empty_ex = new EmptyException("GPA");
+						exceptionStack.addSuppressed(empty_ex);
+					}
+					else {
+						if(!checkGPA_format(input)) {//if GPA input data is not in decimal format, generate GPAformatException instance and add it to exceptionStack
+							GPAformatExcepetion ex = new GPAformatExcepetion();
+							exceptionStack.addSuppressed(ex);
+						}
+						else if(!checkGPA_range(input)) {//if GPA input data is not in right range, generate GPArangeException instance and add it to exceptionStack
+							GPArangeException ex = new GPArangeException();
+							exceptionStack.addSuppressed(ex);
+						}
+						else {//if GPA input data has no problem, set model's GPA field
+							model.setGPA(Float.parseFloat(input));
+						}
+					}
+					input = "";
 					state++;
 					break;
 				default:
+					input ="";
 					state++;
 					break;
 				}
@@ -173,6 +209,10 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 			if(exceptionStack.getSuppressed().length > 0) {//check if there are any accumulated exceptions
 					throw exceptionStack;
 			}//if there is exception, throw it
+			else {
+				setSuccessMessage();//set success message field
+				JOptionPane.showMessageDialog(null, successMessage, "Success Message", JOptionPane.INFORMATION_MESSAGE);//show success message if there is no exception
+			}
 		}
 		catch(Exception exception) {//catch block
 			JOptionPane.showMessageDialog(null, errorMessage, "You have following problem(s).", JOptionPane.ERROR_MESSAGE);//show the problem message in pop-up window
@@ -180,6 +220,7 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 		}
 		finally {//finally block
 			errorMessage = "";//reset error message
+			successMessage = "";//reset success message
 			countOfError = 0;//reset count of error
 		}
 	}
@@ -195,9 +236,29 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 			}
 		}
 	}
+	
+	// * setter method for successMessage field *
+	public void setSuccessMessage() {
+		successMessage += " * Applicant Information * " + "\n\n";
+		
+		successMessage += "Applicant Name: " + model.getApplicantName() + "\n";
+		successMessage += "Birth Date: " + model.getBirthDate() + "\n";
+		successMessage += "Email: " + model.getEmail() + "\n";
+		successMessage += "Degree: " + model.getDegree() + "\n";
+		successMessage += "Major: " + model.getMajor() + "\n";
+		if(model.getMajor().equals("Master")||model.getMajor().equals("PhD")) {
+			successMessage += "GPA: " + model.getGPA() + "\n";
+			successMessage += "Attended University: " + model.getAttenededUniversity() + "\n";
+		}
+		successMessage += "Phone Number: " + model.getPhoneNumber() + "\n";
+		successMessage += "Home Address: " + model.getHomeAddress() + "\n";
+		
+		successMessage += "\n" + ">> application success!" + "\n";
+	}//set success message for showing applicant's information
+	// * finish implementing setter method *
 
 	public int countWords(String input) {
-		String[] words = input.trim().split("\\s+");
+		String [] words = input.split("\\s+");
 		return words.length;
 	}//count words in string input data
 
@@ -206,7 +267,8 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 		String result = "";
 
 		for (int i = 0; i < words.length; i++) {
-			result += words[i] + " ";
+			if(i != words.length-1) result += words[i] + " ";
+			else result += words[i];//if index is end of string, just add words[i] to result without " ".
 		}
 
 		return result;
@@ -263,12 +325,41 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 		return true;
 	}//check if format of phone number input data is correct
 
-	// Below are user-defined exception classes
+	public boolean checkGPA_format(String input) {
+		if(!Character.isDigit(input.charAt(0))) return false;//check if first element of input is digit
+		else if(input.charAt(1)!='.') return false;//check if second element of input is '.'
+		for(int i = 2; i < input.length(); i++) {
+			if(!Character.isDigit(input.charAt(i))) return false;
+		}//check if rest elements of input are digit
+
+		return true;
+	}//check whether format of GPA input data is correct
+	
+	public boolean checkGPA_range(String input) {
+		float GPA = Float.parseFloat(input);
+		if(GPA < 0 || GPA > 4.5) return false;//if GPA is not in right range, return false
+		
+		return true;
+	}//check whether GPA input data is in right range(0~4.5) 
+	
+	// * Below are user-defined exception classes *
 	public class EmptyException extends Exception {
 		public EmptyException(String field) {
 			countOfError++;
+			if(field.equals("degree")) {//if parameter is equals to 'degree', add unique message to errorMessage
+				errorMessage += Integer.toString(countOfError) + ". " + "You have to choose degree among 'Bachelor', 'Master', 'PhD'.\n";
+			}
+			else if(field.equals("attended university")) {//if parameter is equals to 'attended university', add unique message to errorMessage
+				errorMessage += Integer.toString(countOfError) + ". " + "For graduate, you have to enter previous university.\n";
+			}
+			else if(field.equals("GPA")) {//if parameter is equals to 'GPA', add unique message to errorMessage
+				errorMessage += Integer.toString(countOfError) + ". " + "For graduate, you have to enter GPA.\n";
+			}
+			else {//for usual cases
 			errorMessage += Integer.toString(countOfError) + ". " + "You forgot to fill the " + field
 					+ " text field. Please fill it.\n";
+		
+			}
 		}
 	}//throw this exception if input data is empty
 
@@ -323,5 +414,19 @@ public class ApplicationFormControl implements ActionListener, ItemListener {//i
 					+ "Proper format for a phone number is 010-2335-0155.\n";
 		}
 	}//throw this exception if format of phone-number input data is not correct 
-	// finish implementing user-defined classes
+	
+	public class GPAformatExcepetion extends Exception {
+		public GPAformatExcepetion() {
+			countOfError++;
+			errorMessage += Integer.toString(countOfError) + ". " + "Data entered is not in decimal format. Please write it in correct format.\n"; 
+		}
+	}//throw this exception if format of GPA input data is not decimal format
+	
+	public class GPArangeException extends Exception {
+		public GPArangeException() {
+			countOfError++;
+			errorMessage += Integer.toString(countOfError) + ". " + "GPA must be between 0 and 4.5.\n";
+		}
+	}//throw this exception if the range of GPA input data is not in correct range(0~4.5)
+	// * finish implementing user-defined classes *
 }

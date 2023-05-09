@@ -2,7 +2,7 @@ package Main;
 
 public class ApplicationFormModel {
 
-	//Below are fields
+	// * Below are fields *
 	private String applicantName;//store name of applicant 
 	private String birthDate;//store birth-date of applicant
 	private String Email;//store email address of applicant
@@ -13,9 +13,9 @@ public class ApplicationFormModel {
 	private String phoneNumber;//store phone-number of applicant
 	private String personalStatement;//store personal-statement of applicant
 	private String homeAddress;//store home-address of applicant
-	//finish implementing fields
+	// * finish implementing fields *
 	
-	//Below are getter-methods
+	// * Below are getter-methods *
 	public String getApplicantName() {
 		return this.applicantName;
 	}
@@ -55,9 +55,9 @@ public class ApplicationFormModel {
 	public String getHomeAddress() {
 		return this.homeAddress;
 	}
-	//finish implementing getter-methods
+	// * finish implementing getter-methods *
 	
-	//Below are setter-methods
+	// * Below are setter-methods *
 	public void setApplicantName(String input) {
 		this.applicantName = input;
 	}
@@ -97,6 +97,6 @@ public class ApplicationFormModel {
 	public void setHomeAddress(String input) {
 		this.homeAddress = input;
 	}
-	//finish implementing setter-methods
+	// * finish implementing setter-methods *
 }
 
